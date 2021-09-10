@@ -23,7 +23,7 @@ function addGS(){
         },
         redirect: 'follow', // manual, *follow, error
         //referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: JSON.stringify({name:"john"}) // body data type must match "Content-Type" header
+        body: JSON.stringify({Email:"m-7198754@moe-dl.edu.my",First:"ABANG ABDUL RAHMAN BIN ABANG JULAIHI"}) // body data type must match "Content-Type" header
       })
     
 }
