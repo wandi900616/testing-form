@@ -1,32 +1,82 @@
-function testGS(){
+var customerForm=document.getElementById("customerForm");
+var firstName=document.getElementById("firstName");
+var LastName=document.getElementById("LastName");
+var City=document.getElementById("City");
+var Phone=document.getElementById("Phone");
+var submitButton=document.getElementById("submitButton");
+var buttonSpinner=document.getElementById("buttonSpinner");
+var buttonText=document.getElementById("buttonText");
+var unknownError=document.getElementById("unknownError");
 
-    const url="https://script.google.com/macros/s/AKfycbxyFMN1OYrsyv8PzCpoCjIScl7-4VXM5uAxpF0kyiDMKxYqsurJ/exec"
-    fetch(url).then(
-        d=>d.json())
-        .then(d=>{
-            document.getElementById("app").textContent=d[0].status;
-        });
+
+function afterSubmit(e){
+    e.preventDefault();
+    if (customerForm.checkValidity() === false) {
     
+        event.stopPropagation();
+        for (field of customerForm.elements){
+            if(!field.checkValidity()){
+                field.classList.add("is-invalid")
+            }
+
+        }
+        return;
+      }
+      //customerForm.classList.add('was-validated');
+      for (field of customerForm.elements){
+
+            field.classList.remove("is-invalid")
+        
+
+    }
+    
+
+
+
+
+
+    var info={
+        First: firstName.value,
+        Email: LastName.value,
+        ic: Phone.value
+        
+    };
+var url="https://script.google.com/macros/s/AKfycbxyFMN1OYrsyv8PzCpoCjIScl7-4VXM5uAxpF0kyiDMKxYqsurJ/exec";//webappUrl
+
+buttonText.textContent="saving";
+buttonSpinner.classList.remove("d-none");
+submitButton.disabled=true;
+
+fetch(url,
+        {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            redirect: 'follow', // manual, *follow, error
+            body: JSON.stringify(info) // body data type must match "Content-Type" header
+          })
+          .then(res=>res.json())
+          .then(res=>{
+              console.log(res);
+              customerForm.reset();
+              buttonText.textContent="Send";
+buttonSpinner.classList.add("d-none");
+submitButton.disabled=false;
+          })
+          .catch(
+              err=>{
+                  console.log(err);
+                  console.log("something went wrong");
+                  unknownError.classList.remove("d-none");
+                setTimeout( function(){
+                    unknownError.classList.add("d-none");
+                    buttonText.textContent="Send";
+                    buttonSpinner.classList.add("d-none");
+                    submitButton.disabled=false;
+                }
+                    ,3000);
+            }
+              
+          );
 }
 
-function addGS(){
-
-    const url="https://script.google.com/macros/s/AKfycbxyFMN1OYrsyv8PzCpoCjIScl7-4VXM5uAxpF0kyiDMKxYqsurJ/exec"
-    fetch(url,{
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        mode: 'no-cors', // no-cors, *cors, same-origin
-        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        //credentials: 'same-origin', // include, *same-origin, omit
-        headers: {
-          'Content-Type': 'application/json'
-          // 'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        redirect: 'follow', // manual, *follow, error
-        //referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: JSON.stringify({Email:"m-7198754@moe-dl.edu.my",First:"ABANG ABDUL RAHMAN BIN ABANG JULAIHI"}) // body data type must match "Content-Type" header
-      })
-    
-}
-
-document.getElementById("btn").addEventListener("click",testGS);
-document.getElementById("btn2").addEventListener("click",addGS)
+customerForm.addEventListener("submit",afterSubmit);
